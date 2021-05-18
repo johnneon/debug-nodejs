@@ -1,11 +1,15 @@
-var router = require('express').Router();
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { Router } from 'express';
+import { db } from '../db.js';
+// .import('../models/game');
 
-var User = require('../db');
+const userController = Router();
+
+var User = db;
 // import('../models/user');
 
-router.post('/signup', (req, res) => {
+userController.post('/signup', (req, res) => {
     User.create({
         full_name: req.body.user.full_name,
         username: req.body.user.username,
@@ -27,7 +31,7 @@ router.post('/signup', (req, res) => {
         )
 })
 
-router.post('/signin', (req, res) => {
+userController.post('/signin', (req, res) => {
     User.findOne({ where: { username: req.body.user.username } }).then(user => {
         if (user) {
             bcrypt.compare(req.body.user.password, user.passwordHash, function (err, matches) {
@@ -49,4 +53,4 @@ router.post('/signin', (req, res) => {
     })
 })
 
-module.exports = router;
+export default userController;

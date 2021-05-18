@@ -1,8 +1,10 @@
-const router = require('express').Router();
-const Game = require('../db');
+import { Router } from 'express';
+import { db } from '../db.js';
 // .import('../models/game');
 
-router.get('/all', (req, res) => {
+const gameController = Router();
+
+gameController.get('/all', (req, res) => {
   Game.findAll({
       where: {
         owner_id: req.user.id
@@ -24,7 +26,7 @@ router.get('/all', (req, res) => {
     )
 })
 
-router.get('/:id', (req, res) => {
+gameController.get('/:id', (req, res) => {
   Game.findOne({
       where: {
         id: req.params.id,
@@ -46,7 +48,7 @@ router.get('/:id', (req, res) => {
     )
 })
 
-router.post('/create', (req, res) => {
+gameController.post('/create', (req, res) => {
   Game.create({
       title: req.body.game.title,
       owner_id: req.body.user.id,
@@ -69,7 +71,7 @@ router.post('/create', (req, res) => {
     )
 })
 
-router.put('/update/:id', (req, res) => {
+gameController.put('/update/:id', (req, res) => {
   Game.update({
       title: req.body.game.title,
       studio: req.body.game.studio,
@@ -99,7 +101,7 @@ router.put('/update/:id', (req, res) => {
     )
 })
 
-router.delete('/remove/:id', (req, res) => {
+gameController.delete('/remove/:id', (req, res) => {
   Game.destroy({
       where: {
         id: req.params.id,
@@ -122,4 +124,4 @@ router.delete('/remove/:id', (req, res) => {
     )
 })
 
-module.exports = router;
+export default gameController;

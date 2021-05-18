@@ -1,15 +1,18 @@
-const express = require('express');
+import express from 'express';
+import { db } from './db.js';
+import user from './controllers/usercontroller.js';
+import gameController from './controllers/gamecontroller.js';
+// import { validateSession } from './middleware/validate-session';
+import { config } from './common/config.js';
+
 const app = express();
-const db = require('./db');
-const user = require('./controllers/usercontroller');
-const game = require('./controllers/gamecontroller');
-const { PORT } = require('./common/config');
+const { PORT } = config;
 
 db.sync();
-app.use(require('body-parser'));
+app.use(express.json());
 app.use('/api/auth', user);
-app.use(require('./middleware/validate-session'))
-app.use('/api/game', game);
+// app.use(validateSession);
+app.use('/api/game', gameController);
 
 app.listen(PORT, () => {
     console.log(`App is listening on ${PORT}`);

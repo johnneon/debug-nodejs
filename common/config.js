@@ -1,13 +1,17 @@
-const dotenv = require('dotenv');
-const path = require('path');
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { env } = process;
 
 dotenv.config({
-  path: path.join(__dirname, '../.env')
+  path: join(__dirname, '../.env')
 });
 
-module.exports = {
-  PORT: process.env.PORT,
-  DB_NAME: process.env.DB_NAME,
-  DB_USERNAME: process.env.DB_USERNAME,
-  DB_PASSWORD: process.env.DB_PASSWORD,
+export const config = {
+  PORT: env.PORT,
+  DB_NAME: env.DB_NAME,
+  DB_USERNAME: env.DB_USERNAME,
+  DB_PASSWORD: env.DB_PASSWORD,
 };

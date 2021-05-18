@@ -3,7 +3,8 @@ const { DB_NAME, DB_USERNAME, DB_PASSWORD } = require('./common/config');
 
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
     host: 'localhost',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    operatorsAliases: false,
 })
 
 sequelize.authenticate().then(

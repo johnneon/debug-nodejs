@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import { Game } from '../db.js';
 import { constants } from '../common/constants.js';
+import {
+  OK,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+  CREATED,
+} from 'http-status-codes';
 
 const {
   DATA_FETCHED,
@@ -21,7 +27,7 @@ gameController.get('/all', async (req, res) => {
       }
     });
   
-    return res.status(200).json({
+    return res.status(OK).json({
       games,
       message: DATA_FETCHED,
     })
@@ -42,9 +48,9 @@ gameController.get('/:id', async (req, res) => {
       }
     });
 
-    return res.status(200).json({ game });
+    return res.status(OK).json({ game });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(NOT_FOUND).json({
       message: DATA_NOT_FOUND,
     });
   }
@@ -68,12 +74,12 @@ gameController.post('/create', async (req, res) => {
       have_played: have_played
     });
 
-    return res.status(200).json({
+    return res.status(CREATED).json({
       game,
       message: GAME_CREATED
     });
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(INTERNAL_SERVER_ERROR).send(error.message);
   }
 })
 
@@ -103,12 +109,12 @@ gameController.put('/update/:id', async (req, res) => {
 
     const game = await Game.findOne({ where }); 
 
-    return res.status(200).json({
+    return res.status(OK).json({
       game,
       message: SUCCESSFULY_UPDATED
     })
   } catch (error) {
-    return res.status(500).json({
+    return res.status(INTERNAL_SERVER_ERROR).json({
       message: error.message
     });
   }
@@ -123,12 +129,12 @@ gameController.delete('/remove/:id', async (req, res) => {
       }
     });
 
-    return res.status(200).json({
+    return res.status(OK).json({
       game,
       message: SUCCESSFULY_DELETED,
     })
   } catch (error) {
-    return res.status(500).json({
+    return res.status(INTERNAL_SERVER_ERROR).json({
       error: error.message
     });
   }

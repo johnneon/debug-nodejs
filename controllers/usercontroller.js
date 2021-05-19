@@ -4,6 +4,13 @@ import { Router } from 'express';
 import { User } from '../db.js';
 import { constants } from '../common/constants.js';
 import { config } from '../common/config.js';
+import {
+  CREATED,
+  OK,
+  FORBIDDEN,
+  INTERNAL_SERVER_ERROR,
+  BAD_GATEWAY,
+} from 'http-status-codes';
 
 const { JWT_SECRET } = config;
 
@@ -37,9 +44,9 @@ userController.post('/signup', async (req, res) => {
       expiresIn: 60 * 60 * 24,
     });
 
-    return res.status(200).json({ user, token });
+    return res.status(CREATED).json({ user, token });
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(INTERNAL_SERVER_ERROR).send(error.message);
   }
 })
 
@@ -53,14 +60,14 @@ userController.post('/signin', async (req, res) => {
     });
 
     if (!user) {
-      return res.status(403).send({
+      return res.status(FORBIDDEN).send({
         error: USER_NOT_FOUND,
       });
     }
 
     bcrypt.compare(password, user.passwordHash, function (err, matches) {
       if (!matches) {
-        return res.status(502).send({
+        return res.status(BAD_GATEWAY).send({
           error: PASSWORDS_DO_NOT_MATCH
         });
       }
@@ -71,14 +78,14 @@ userController.post('/signin', async (req, res) => {
         expiresIn: 60 * 60 * 24
       });
 
-      return res.json({
+      return res.status(OK).json({
         user,
         message: SUCCESSFULY_AUTH,
         sessionToken: token
       });
     });
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(INTERNAL_SERVER_ERROR).send(error.message);
   }
 })
 

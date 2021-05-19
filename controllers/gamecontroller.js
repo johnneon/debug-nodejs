@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { db } from '../db.js';
-// .import('../models/game');
+import { Game } from '../db.js';
 
 const gameController = Router();
 
@@ -11,7 +10,7 @@ gameController.get('/all', (req, res) => {
       }
     })
     .then(
-      function findSuccess(data) {
+      function findSuccess(games) {
         res.status(200).json({
           games: games,
           message: "Data fetched."

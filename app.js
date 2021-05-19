@@ -12,8 +12,7 @@ const { PORT } = config;
 db.sync();
 app.use(express.json());
 app.use('/api/auth', user);
-app.use(validateSession);
-app.use('/api/game', gameController);
+app.use('/api/game', validateSession, gameController);
 
 app.listen(PORT, () => {
     console.log(`App is listening on ${PORT}`);

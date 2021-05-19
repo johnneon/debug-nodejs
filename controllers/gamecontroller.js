@@ -1,5 +1,14 @@
 import { Router } from 'express';
 import { Game } from '../db.js';
+import { constants } from '../common/constants.js';
+
+const {
+  DATA_FETCHED,
+  DATA_NOT_FOUND,
+  GAME_CREATED,
+  SUCCESSFULY_UPDATED,
+  SUCCESSFULY_DELETED,
+} = constants;
 
 const gameController = Router();
 
@@ -10,15 +19,15 @@ gameController.get('/all', async (req, res) => {
       where: {
         owner_id: id
       }
-    })
+    });
   
     return res.status(200).json({
       games,
-      message: "Data fetched."
+      message: DATA_FETCHED,
     })
   } catch (error) {
     return res.status(500).json({
-      message: "Data not found"
+      message: DATA_NOT_FOUND,
     });
   }
 })
@@ -36,7 +45,7 @@ gameController.get('/:id', async (req, res) => {
     return res.status(200).json({ game });
   } catch (error) {
     return res.status(500).json({
-      message: "Data not found."
+      message: DATA_NOT_FOUND,
     });
   }
 })
@@ -61,7 +70,7 @@ gameController.post('/create', async (req, res) => {
 
     return res.status(200).json({
       game,
-      message: "Game created."
+      message: GAME_CREATED
     });
   } catch (error) {
     return res.status(500).send(error.message);
@@ -96,7 +105,7 @@ gameController.put('/update/:id', async (req, res) => {
 
     return res.status(200).json({
       game,
-      message: "Successfully updated."
+      message: SUCCESSFULY_UPDATED
     })
   } catch (error) {
     return res.status(500).json({
@@ -116,7 +125,7 @@ gameController.delete('/remove/:id', async (req, res) => {
 
     return res.status(200).json({
       game,
-      message: "Successfully deleted"
+      message: SUCCESSFULY_DELETED,
     })
   } catch (error) {
     return res.status(500).json({

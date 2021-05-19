@@ -2,6 +2,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Router } from 'express';
 import { User } from '../db.js';
+import { constants } from '../common/constants.js';
+import { config } from '../common/config.js';
+
+const { JWT_SECRET } = config;
+
+const {
+  USER_NOT_FOUND,
+  PASSWORDS_DO_NOT_MATCH,
+  SUCCESSFULY_AUTH,
+} = constants;
 
 const userController = Router();
 
@@ -23,7 +33,7 @@ userController.post('/signup', async (req, res) => {
 
     const token = jwt.sign({
       id: user.id,
-    }, 'lets_play_sum_games_man', {
+    }, JWT_SECRET, {
       expiresIn: 60 * 60 * 24,
     });
 
@@ -44,26 +54,26 @@ userController.post('/signin', async (req, res) => {
 
     if (!user) {
       return res.status(403).send({
-        error: "User not found."
+        error: USER_NOT_FOUND,
       });
     }
 
     bcrypt.compare(password, user.passwordHash, function (err, matches) {
       if (!matches) {
         return res.status(502).send({
-          error: "Passwords do not match."
+          error: PASSWORDS_DO_NOT_MATCH
         });
       }
 
       const token = jwt.sign({
         id: user.id
-      }, 'lets_play_sum_games_man', {
+      }, JWT_SECRET, {
         expiresIn: 60 * 60 * 24
       });
 
       return res.json({
         user,
-        message: "Successfully authenticated.",
+        message: SUCCESSFULY_AUTH,
         sessionToken: token
       });
     });

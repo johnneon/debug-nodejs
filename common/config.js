@@ -16,4 +16,5 @@ export const config = {
   DB_PASSWORD: env.DB_PASSWORD,
   DB_HOST: env.DB_HOST,
   DB_PORT: env.DB_PORT,
+  JWT_SECRET: env.JWT_SECRET,
 };

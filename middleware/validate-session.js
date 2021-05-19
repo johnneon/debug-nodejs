@@ -1,8 +1,7 @@
 import jwt from'jsonwebtoken';
-var User = require('sequelize');
-// .import('../models/user');
+import { User } from '../db.js';
 
-module.exports = function (req, res, next) {
+export const validateSession =  (req, res, next) => {
     if (req.method == 'OPTIONS') {
         next();
     } else {

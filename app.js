@@ -1,15 +1,19 @@
-var express = require('express');
-var app = express();
-var db = require('./db');
-var user = require('./controllers/usercontroller');
-var game = require('./controllers/gamecontroller')
+import express from 'express';
+import { db } from './db.js';
+import user from './controllers/usercontroller.js';
+import gameController from './controllers/gamecontroller.js';
+import { validateSession } from './middleware/validate-session.js';
+import { config } from './common/config.js';
 
+
+const app = express();
+const { PORT } = config;
 
 db.sync();
-app.use(require('body-parser'));
+app.use(express.json());
 app.use('/api/auth', user);
-app.use(require('./middleware/validate-session'))
-app.use('/api/game', game);
-app.listen(function() {
-    console.log("App is listening on 4000");
-})
+app.use('/api/game', validateSession, gameController);
+
+app.listen(PORT, () => {
+    console.log(`App is listening on ${PORT}`);
+});

@@ -1,19 +1,29 @@
 import jwt from 'jsonwebtoken';
+import { User } from '../db.js';
+import { constants } from '../common/constants.js';
 import {
-	User
-} from '../db.js';
+  FORBIDDEN,
+  UNAUTHORIZED,
+  BAD_REQUEST,
+} from 'http-status-codes';
+
+const {
+  NO_TOKEN,
+  NOT_AUTH,
+  OPTIONS,
+} = constants;
 
 export const validateSession = async (req, res, next) => {
-	if (req.method == 'OPTIONS') {
+	if (req.method == OPTIONS) {
 		return next();
 	}
 
 	const sessionToken = req.headers.authorization.slice(7, req.headers.authorization.length);
 	
 	if (!sessionToken) {
-		return res.status(403).send({
+		return res.status(FORBIDDEN).send({
 			auth: false,
-			message: "No token provided."
+			message: NO_TOKEN,
 		});
 	}
 
@@ -28,14 +38,14 @@ export const validateSession = async (req, res, next) => {
 				req.user = user;
 				return next();
 			} catch (error) {
-				return res.status(401).send({
-					error: "not authorized"
+				return res.status(UNAUTHORIZED).send({
+					error: NOT_AUTH,
 				});
 			}
 		}
 
-		return res.status(400).send({
-			error: "not authorized"
+		return res.status(BAD_REQUEST).send({
+			error: NOT_AUTH,
 		});
 	});
 }

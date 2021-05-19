@@ -1,19 +1,16 @@
-import bcrypt from 'bcryptjs';
+import { bc } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Router } from 'express';
-import { db } from '../db.js';
-// .import('../models/game');
+import { User } from '../db.js';
 
 const userController = Router();
 
-var User = db;
-// import('../models/user');
-
 userController.post('/signup', (req, res) => {
+    console.log(req.body);
     User.create({
         full_name: req.body.user.full_name,
         username: req.body.user.username,
-        passwordhash: bcrypt.hashSync(req.body.user.password, 10),
+        passwordHash: bcrypt.hashSync(req.body.user.password, 10),
         email: req.body.user.email,
     })
         .then(

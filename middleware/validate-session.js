@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from'jsonwebtoken';
 var User = require('sequelize');
 // .import('../models/user');
 

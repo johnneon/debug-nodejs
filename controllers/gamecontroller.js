@@ -5,9 +5,10 @@ const gameController = Router();
 
 gameController.get('/all', async (req, res) => {
   try {
+    const { id } = req.user;
     const games = await Game.findAll({
       where: {
-        owner_id: req.user.id
+        owner_id: id
       }
     })
   
@@ -22,104 +23,106 @@ gameController.get('/all', async (req, res) => {
   }
 })
 
-gameController.get('/:id', (req, res) => {
-  Game.findOne({
+gameController.get('/:id', async (req, res) => {
+  try {
+    const { params, user } = req;
+    const game = await Game.findOne({
       where: {
-        id: req.params.id,
-        owner_id: req.user.id
+        id: params.id,
+        owner_id: user.id
       }
-    })
-    .then(
-      function findSuccess(game) {
-        res.status(200).json({
-          game: game
-        })
-      },
+    });
 
-      function findFail(err) {
-        res.status(500).json({
-          message: "Data not found."
-        })
-      }
-    )
+    return res.status(200).json({ game });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Data not found."
+    });
+  }
 })
 
-gameController.post('/create', (req, res) => {
-  Game.create({
-      title: req.body.game.title,
+gameController.post('/create', async (req, res) => {
+  try {
+    const {
+      title,
+      studio,
+      esrb_rating,
+      user_rating,
+      have_played
+    } = req.body.game;
+    const game = await Game.create({
+      title: title,
       owner_id: req.user.id,
-      studio: req.body.game.studio,
-      esrb_rating: req.body.game.esrb_rating,
-      user_rating: req.body.game.user_rating,
-      have_played: req.body.game.have_played
-    })
-    .then(
-      function createSuccess(game) {
-        res.status(200).json({
-          game: game,
-          message: "Game created."
-        })
-      },
+      studio: studio,
+      esrb_rating: esrb_rating,
+      user_rating: user_rating,
+      have_played: have_played
+    });
 
-      function createFail(err) {
-        res.status(500).send(err.message)
-      }
-    )
+    return res.status(200).json({
+      game,
+      message: "Game created."
+    });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 })
 
-gameController.put('/update/:id', (req, res) => {
-  // Сделать норм возвращение
-  Game.update({
-      title: req.body.game.title,
-      studio: req.body.game.studio,
-      esrb_rating: req.body.game.esrb_rating,
-      user_rating: req.body.game.user_rating,
-      have_played: req.body.game.have_played
-    }, {
+gameController.put('/update/:id', async (req, res) => {
+  try {
+    const {
+      title,
+      studio,
+      esrb_rating,
+      user_rating,
+      have_played
+    } = req.body.game;
+    const { params, user } = req;
+
+    const where = {
+      id: params.id,
+      owner_id: user.id
+    };
+
+    await Game.update({
+      title: title,
+      studio: studio,
+      esrb_rating: esrb_rating,
+      user_rating: user_rating,
+      have_played: have_played
+    }, { where });
+
+    const game = await Game.findOne({ where }); 
+
+    return res.status(200).json({
+      game,
+      message: "Successfully updated."
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message
+    });
+  }
+})
+
+gameController.delete('/remove/:id', async (req, res) => {
+  try {
+    const game = await Game.destroy({
       where: {
         id: req.params.id,
         owner_id: req.user.id
       }
+    });
+
+    return res.status(200).json({
+      game,
+      message: "Successfully deleted"
     })
-    .then(
-      function updateSuccess(game) {
-        console.log(game);
-        res.status(200).json({
-          game: game,
-          message: "Successfully updated."
-        })
-      },
-
-      function updateFail(err) {
-        res.status(500).json({
-          message: err.message
-        })
-      }
-
-    )
-})
-
-gameController.delete('/remove/:id', (req, res) => {
-  Game.destroy({
-      where: {
-        id: req.params.id,
-        owner_id: req.user.id
-      }
-    })
-    .then(
-      function deleteSuccess(game) {
-        res.status(200).json({
-          game: game,
-          message: "Successfully deleted"
-        })
-      },
-
-      function deleteFail(err) {
-        res.status(500).json({
-          error: err.message
-        })
-      }
-    )
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
 })
 
 export default gameController;

@@ -3,26 +3,23 @@ import { Game } from '../db.js';
 
 const gameController = Router();
 
-gameController.get('/all', (req, res) => {
-  Game.findAll({
+gameController.get('/all', async (req, res) => {
+  try {
+    const games = await Game.findAll({
       where: {
         owner_id: req.user.id
       }
     })
-    .then(
-      function findSuccess(games) {
-        res.status(200).json({
-          games: games,
-          message: "Data fetched."
-        })
-      },
-
-      function findFail() {
-        res.status(500).json({
-          message: "Data not found"
-        })
-      }
-    )
+  
+    return res.status(200).json({
+      games,
+      message: "Data fetched."
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Data not found"
+    });
+  }
 })
 
 gameController.get('/:id', (req, res) => {
@@ -50,7 +47,7 @@ gameController.get('/:id', (req, res) => {
 gameController.post('/create', (req, res) => {
   Game.create({
       title: req.body.game.title,
-      owner_id: req.body.user.id,
+      owner_id: req.user.id,
       studio: req.body.game.studio,
       esrb_rating: req.body.game.esrb_rating,
       user_rating: req.body.game.user_rating,

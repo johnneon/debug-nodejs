@@ -1,4 +1,4 @@
-import { bc } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Router } from 'express';
 import { User } from '../db.js';
@@ -6,7 +6,6 @@ import { User } from '../db.js';
 const userController = Router();
 
 userController.post('/signup', (req, res) => {
-    console.log(req.body);
     User.create({
         full_name: req.body.user.full_name,
         username: req.body.user.username,

@@ -24,7 +24,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
 export const User = UserModel(sequelize, DataTypes);
 export const Game = GameModel(sequelize, DataTypes);
 
-User.sync({ force: true });
-Game.sync({ force: true });
+User.sync();
+Game.sync();
 
 export const db = sequelize;

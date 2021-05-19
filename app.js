@@ -5,6 +5,7 @@ import gameController from './controllers/gamecontroller.js';
 // import { validateSession } from './middleware/validate-session';
 import { config } from './common/config.js';
 
+
 const app = express();
 const { PORT } = config;
 

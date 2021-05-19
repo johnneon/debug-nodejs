@@ -68,6 +68,7 @@ gameController.post('/create', (req, res) => {
 })
 
 gameController.put('/update/:id', (req, res) => {
+  // Сделать норм возвращение
   Game.update({
       title: req.body.game.title,
       studio: req.body.game.studio,
@@ -77,11 +78,12 @@ gameController.put('/update/:id', (req, res) => {
     }, {
       where: {
         id: req.params.id,
-        owner_id: req.user
+        owner_id: req.user.id
       }
     })
     .then(
       function updateSuccess(game) {
+        console.log(game);
         res.status(200).json({
           game: game,
           message: "Successfully updated."
